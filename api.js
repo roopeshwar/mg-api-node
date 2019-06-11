@@ -1,6 +1,7 @@
 var https = require('https');
 var http = require('http');
 var zlib = require('zlib');
+var keepAliveAgent = new https.Agent({ keepAlive: true, maxSockets: 100, maxFreeSockets: 100 });
 module.exports = function (u, p, d, s, o, sId) {
     var credentials,
         userName = u,
@@ -102,7 +103,9 @@ module.exports = function (u, p, d, s, o, sId) {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'Content-Length': post_data.length
-            }
+            },
+            timeout: 60000,
+            agent: keepAliveAgent
         };
         if (options.compression) {
             opts.headers['Accept-Encoding'] = options.compression;
